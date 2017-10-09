@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>五子棋</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: #ccc;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<canvas width="800" height="600"></canvas>
+<script>
+    function getAngle(angle) {
+        return angle / 180 * Math.PI;
+    }
+    //获取canvas元素
+    var cs = document.querySelector('canvas');
+    //获取canvas的上下文
+    var ctx = cs.getContext('2d');
+    //调用上下文的api进行图形的绘制
+    var gap = 40;
+    //flag为true是黑棋，黑棋先走
+    var flag = true;
+    var placeArr = [];
+    var index = 0;
+    var row = cs.height / gap;//row 行
+    var col = cs.width / gap;// col列
+    for (var i = 0; i <= row; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, gap * i);
+        ctx.lineTo(cs.width, gap * i);
+        ctx.stroke();
+    }
+    for (var i = 0; i <= col; i++) {
+        ctx.beginPath();
+        ctx.moveTo(gap * i, 0);
+        ctx.lineTo(gap * i, cs.height);
+        ctx.stroke();
+    }
+    function setChess(x, y) {
+        ctx.beginPath();
+        var r = 18;
+        ctx.arc(x, y, r, getAngle(0), getAngle(360));
+        flag ? ctx.fillStyle = 'black' : ctx.fillStyle = 'white';
+        ctx.fill();
+    }
+    cs.onclick = function (e) {
+        var x = e.pageX;
+        var y = e.pageY;
+        if (x % gap > gap / 2) {
+            x = Math.floor(x / gap + 1) * gap;
+        } else {
+            x = Math.floor(x / gap) * gap;
+        }
+        if (y % gap > gap / 2) {
+            y = Math.floor(y / gap + 1) * gap;
+        } else {
+            y = Math.floor(y / gap) * gap;
+        }
+        var place = {
+            x: x,
+            y: y
+        };
+        for (var i = 0; i < index; i++) {
+            if (placeArr[i].x == x && placeArr[i].y == y) {
+                return;
+            }
+        }
+        setChess(x, y);
+        placeArr.push(place);
+        placeArr[index].player = flag;
+        flag = flag ? false : true;
+        index++;
+    };
+
+
+</script>
+</body>
+</html>
